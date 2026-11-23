@@ -1,0 +1,31 @@
+problem_id,subject,difficulty,baseline_leakage,baseline_blooms,baseline_alignment,socratic_leakage,socratic_blooms,socratic_alignment
+MATH-01,Mathematics,Easy,1.0,2,1.0,0.0,3,3.9
+MATH-02,Mathematics,Easy,1.0,2,1.0,0.0,3,3.9
+MATH-03,Mathematics,Medium,1.0,2,1.0,0.0,3,3.9
+MATH-04,Mathematics,Medium,1.0,2,1.0,0.0,3,3.9
+MATH-05,Mathematics,Easy,1.0,2,1.0,0.0,3,3.9
+MATH-06,Mathematics,Easy,1.0,2,1.0,0.0,3,3.9
+MATH-07,Mathematics,Medium,1.0,2,1.0,0.0,3,3.9
+MATH-08,Mathematics,Medium,1.0,2,1.0,0.0,3,3.9
+MATH-09,Mathematics,Medium,1.0,2,1.0,0.0,3,3.9
+MATH-10,Mathematics,Hard,1.0,2,1.0,0.0,3,3.9
+CS-01,Computer Science,Easy,1.0,2,1.0,0.0,3,3.9
+CS-02,Computer Science,Easy,1.0,2,1.0,0.0,3,3.9
+CS-03,Computer Science,Easy,1.0,2,1.0,0.0,3,3.9
+CS-04,Computer Science,Medium,1.0,2,1.0,0.0,3,3.9
+CS-05,Computer Science,Medium,1.0,2,1.0,0.0,3,3.9
+CS-06,Computer Science,Medium,1.0,2,1.0,0.0,3,3.9
+CS-07,Computer Science,Easy,1.0,2,1.0,0.0,3,3.9
+CS-08,Computer Science,Hard,1.0,2,1.0,0.0,3,3.9
+CS-09,Computer Science,Hard,1.0,2,1.0,0.0,3,3.9
+CS-10,Computer Science,Medium,1.0,2,1.0,0.0,3,3.9
+PHYS-01,Physics,Easy,1.0,2,1.0,0.0,3,3.9
+PHYS-02,Physics,Easy,1.0,2,1.0,0.0,3,3.9
+PHYS-03,Physics,Easy,1.0,2,1.0,0.0,3,3.9
+PHYS-04,Physics,Medium,1.0,2,1.0,0.0,3,3.9
+PHYS-05,Physics,Easy,1.0,2,1.0,0.0,3,3.9
+PHYS-06,Physics,Medium,1.0,2,1.0,0.0,3,3.9
+PHYS-07,Physics,Medium,1.0,2,1.0,0.0,3,3.9
+PHYS-08,Physics,Hard,1.0,2,1.0,0.0,3,3.9
+PHYS-09,Physics,Hard,1.0,2,1.0,0.0,3,3.9
+PHYS-10,Physics,Easy,1.0,2,1.0,0.0,3,3.9
