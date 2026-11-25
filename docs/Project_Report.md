@@ -1,9 +1,25 @@
-# ACADEMIC PROJECT REPORT
+# DAYANANDA SAGAR UNIVERSITY
+### SCHOOL OF COMPUTER APPLICATIONS
+**Kudlu Gate, Hosur Road, Bengaluru &ndash; 560068**
 
-**Course:** Open Elective - Generative AI  
-**Project Title:** Mitigating Cognitive Offloading in AI-Assisted Learning: An Empirical Study of Socratic Scaffolding vs. Direct LLM Response  
-**Author:** Lata Kumari  
-**Academic Year:** 2026  
+---
+
+# A Project Report On
+## MITIGATING COGNITIVE OFFLOADING IN AI-ASSISTED LEARNING
+**An Empirical Study of Socratic Scaffolding vs. Direct LLM Response**
+
+*Submitted as part of the RTD Open Elective subject*  
+**MASTER OF COMPUTER APPLICATIONS (MCA)**
+
+**Submitted by:**  
+**Lata Kumari**  
+**USN / Reg. No:** SCA25MCA157  
+
+**Under the guidance of:**  
+**Dr. Santosh Kumar J**  
+
+**Date:** 24-Nov-2026  
+**Institution:** Dayananda Sagar University, Bengaluru &ndash; 560068  
 
 ---
 

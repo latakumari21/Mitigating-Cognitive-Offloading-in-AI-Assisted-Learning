@@ -40,9 +40,13 @@ def generate_charts():
     
     plt.tight_layout()
     chart1_path = os.path.join(results_dir, "leakage_comparison.png")
-    plt.savefig(chart1_path, dpi=300)
-    plt.close()
-    print(f"Saved: {chart1_path}")
+    try:
+        plt.savefig(chart1_path, dpi=300)
+        print(f"Saved: {chart1_path}")
+    except PermissionError:
+        print(f"Note: Could not overwrite {chart1_path} directly due to OneDrive lock.")
+    finally:
+        plt.close()
     
     # 2. Bloom's Taxonomy Cognitive Demand Comparison
     fig, ax = plt.subplots(figsize=(8, 5))
@@ -65,9 +69,13 @@ def generate_charts():
     
     plt.tight_layout()
     chart2_path = os.path.join(results_dir, "blooms_taxonomy_distribution.png")
-    plt.savefig(chart2_path, dpi=300)
-    plt.close()
-    print(f"Saved: {chart2_path}")
+    try:
+        plt.savefig(chart2_path, dpi=300)
+        print(f"Saved: {chart2_path}")
+    except PermissionError:
+        print(f"Note: Could not overwrite {chart2_path} directly due to OneDrive lock.")
+    finally:
+        plt.close()
 
 if __name__ == "__main__":
     generate_charts()
