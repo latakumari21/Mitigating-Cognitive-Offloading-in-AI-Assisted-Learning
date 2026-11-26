@@ -459,5 +459,30 @@ class TestInteractionFlowAndPromptAdaptation(unittest.TestCase):
         self.assertIn("operating system", resp)
 
 
+
+    def test_baseline_mode_language_awareness(self):
+        """Baseline mode returns direct code in the student's actual language (Pandas, ML, Java, C++), not hardcoded C."""
+        pandas_code = "import pandas as pd\ndf = pd.read_csv('dataset.csv')\ndf = df.dropna(inplace=True)\nprint(len(df))"
+        r_pandas = self.service.generate_response(prompt="", mode="baseline", student_code=pandas_code, user_query="Explain")
+        self.assertIn("```python", r_pandas)
+        self.assertIn("df = df.dropna()", r_pandas)
+        self.assertNotIn("#include <stdio.h>", r_pandas)
+
+        ml_code = "from sklearn.preprocessing import StandardScaler\nscaler = StandardScaler()\nX_test_scaled = scaler.fit_transform(X_test)"
+        r_ml = self.service.generate_response(prompt="", mode="baseline", student_code=ml_code, user_query="Explain")
+        self.assertIn("```python", r_ml)
+        self.assertIn("scaler.transform(X_test)", r_ml)
+        self.assertNotIn("#include <stdio.h>", r_ml)
+
+        java_code = 'public class Main { public static void main(String[] args) { System.out.println("Hi"); } }'
+        r_java = self.service.generate_response(prompt="", mode="baseline", student_code=java_code, user_query="Explain")
+        self.assertIn("```java", r_java)
+        self.assertNotIn("#include <stdio.h>", r_java)
+
+        cpp_code = '#include <iostream>\nint main() { std::cout << "Hi"; return 0; }'
+        r_cpp = self.service.generate_response(prompt="", mode="baseline", student_code=cpp_code, user_query="Explain")
+        self.assertIn("```cpp", r_cpp)
+
+
 if __name__ == "__main__":
     unittest.main()

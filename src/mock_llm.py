@@ -31,35 +31,7 @@ class MockLLMService:
         if mode == "baseline":
             if expected_ans:
                 return f"The complete and final solution is: {expected_ans}. Here is the full derivation for you to copy."
-            if "binary_search" in student_code or "binary search" in (user_query or prompt).lower():
-                return (
-                    "```python\n"
-                    "def binary_search(arr, target):\n"
-                    "    low = 0\n"
-                    "    high = len(arr) - 1\n"
-                    "    while low <= high:\n"
-                    "        mid = (low + high) // 2\n"
-                    "        if arr[mid] == target:\n"
-                    "            return mid\n"
-                    "        elif arr[mid] < target:\n"
-                    "            low = mid + 1\n"
-                    "        else:\n"
-                    "            high = mid - 1\n"
-                    "    return -1\n"
-                    "```\n"
-                    "Here is the complete working code for your assignment."
-                )
-            return (
-                "```c\n"
-                "#include <stdio.h>\n\n"
-                "int main() {\n"
-                "    // Direct working solution provided (offloading student reasoning)\n"
-                "    printf(\"Hello World\\n\");\n"
-                "    return 0;\n"
-                "}\n"
-                "```\n"
-                "Here is the complete working code for your assignment."
-            )
+            return self._generate_baseline_response(prompt, student_code, user_query)
 
         # ==================== SOCRATICGUARD REASONING LOOP ====================
         # 1. Extract query
@@ -683,4 +655,142 @@ class MockLLMService:
             f"2. **State & Invariants**: What preconditions, inputs, or transformations must be preserved during execution?\n"
             f"3. **Practical Application**: If you implemented this in code, what edge cases or boundary conditions would you test first?\n\n"
             f"How would you begin approaching the first step?"
+        )
+
+    def _generate_baseline_response(self, prompt: str, student_code: str = "", user_query: str = "") -> str:
+        """Language-aware unconstrained baseline response for any programming language."""
+        code = (student_code or "").strip()
+        if not code and "```" in prompt:
+            parts = re.findall(r"```(?:[a-zA-Z0-9_\+]+)?\n(.*?)```", prompt, re.DOTALL)
+            if parts:
+                code = parts[-1].strip()
+        code_lower = code.lower()
+        q_lower = (user_query or prompt).lower()
+
+        # 1. Data Science: Pandas inplace=True bug
+        if "pandas" in code_lower or ("inplace=true" in code_lower and ("dropna" in code_lower or "fillna" in code_lower or "sort_values" in code_lower)):
+            return (
+                "Your code assigns the result of `inplace=True` back to `df`, which sets `df` to `None`.\n\n"
+                "```python\n"
+                "import pandas as pd\n\n"
+                "df = pd.read_csv('dataset.csv')\n"
+                "df = df.dropna()  # Fixed: remove inplace=True when reassigning\n"
+                "print('Total cleaned rows:', len(df))\n"
+                "```\n"
+                "Here is the complete working Python (Pandas) code for your assignment."
+            )
+
+        # 2. Data Science: Scikit-Learn ML Data Leakage
+        if "fit_transform" in code_lower or "standardscaler" in code_lower or "train_test_split" in code_lower or "sklearn" in code_lower:
+            return (
+                "Your code leaks test-set statistics by calling `fit_transform` on `X_test` (or before splitting).\n\n"
+                "```python\n"
+                "from sklearn.model_selection import train_test_split\n"
+                "from sklearn.preprocessing import StandardScaler\n\n"
+                "X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)\n"
+                "scaler = StandardScaler()\n"
+                "X_train_scaled = scaler.fit_transform(X_train)\n"
+                "X_test_scaled = scaler.transform(X_test)  # Fixed: use transform() only on test data\n"
+                "```\n"
+                "Here is the complete working Python (Scikit-Learn) code for your assignment."
+            )
+
+        # 3. Binary Search (Python)
+        if "binary_search" in code_lower or "binary search" in q_lower:
+            return (
+                "```python\n"
+                "def binary_search(arr, target):\n"
+                "    low = 0\n"
+                "    high = len(arr) - 1\n"
+                "    while low <= high:\n"
+                "        mid = (low + high) // 2\n"
+                "        if arr[mid] == target:\n"
+                "            return mid\n"
+                "        elif arr[mid] < target:\n"
+                "            low = mid + 1\n"
+                "        else:\n"
+                "            high = mid - 1\n"
+                "    return -1\n"
+                "```\n"
+                "Here is the complete working Python code for your assignment."
+            )
+
+        # 4. General Python code
+        if any(kw in code_lower for kw in ["def ", "import ", "elif ", "except:", "print("]) and "#include" not in code_lower:
+            fixed_py = code
+            if "=[]" in fixed_py.replace(" ", ""):
+                fixed_py = re.sub(r"(\w+)\s*=\s*\[\s*\]", r"\1=None", fixed_py)
+            if "except:" in fixed_py:
+                fixed_py = fixed_py.replace("except:", "except Exception as e:")
+            return (
+                f"```python\n{fixed_py}\n```\n"
+                "Here is the complete working Python solution and explanation for your code."
+            )
+
+        # 5. Java code
+        if "public class" in code_lower or "system.out" in code_lower or "public static void main" in code_lower or "java" in q_lower:
+            java_code = code if code else (
+                "public class Main {\n"
+                "    public static void main(String[] args) {\n"
+                "        System.out.println(\"Hello World\");\n"
+                "    }\n"
+                "}"
+            )
+            return (
+                f"```java\n{java_code}\n```\n"
+                "Here is the complete working Java code for your assignment."
+            )
+
+        # 6. JavaScript code
+        if any(kw in code_lower for kw in ["console.log", "function ", "const ", "let ", "=>"]) or "javascript" in q_lower:
+            js_code = code if code else (
+                "function main() {\n"
+                "    console.log('Hello World');\n"
+                "}\n"
+                "main();"
+            )
+            return (
+                f"```javascript\n{js_code}\n```\n"
+                "Here is the complete working JavaScript code for your assignment."
+            )
+
+        # 7. C / C++ code
+        if any(kw in code_lower for kw in ["#include", "int main", "printf", "cout", "void main"]) or re.search(r"\bc\b|\bc\+\+\b", q_lower):
+            if "cout" in code_lower or "<iostream>" in code_lower or "c++" in q_lower:
+                return (
+                    "```cpp\n"
+                    "#include <iostream>\n"
+                    "using namespace std;\n\n"
+                    "int main() {\n"
+                    "    cout << \"Hello World\" << endl;\n"
+                    "    return 0;\n"
+                    "}\n"
+                    "```\n"
+                    "Here is the complete working C++ code for your assignment."
+                )
+            return (
+                "```c\n"
+                "#include <stdio.h>\n\n"
+                "int main() {\n"
+                "    // Direct working solution provided (offloading student reasoning)\n"
+                "    printf(\"Hello World\\n\");\n"
+                "    return 0;\n"
+                "}\n"
+                "```\n"
+                "Here is the complete working C code for your assignment."
+            )
+
+        # 8. Generic fallback if no specific language was detected
+        if code:
+            return (
+                f"```\n{code}\n```\n"
+                "Here is the direct solution and explanation for your submitted code."
+            )
+        return (
+            "Here is the direct, complete solution for your inquiry:\n\n"
+            "```python\n"
+            "# Direct working solution provided (offloading student reasoning)\n"
+            "def solve():\n"
+            "    print('Complete solution output')\n"
+            "```"
         )

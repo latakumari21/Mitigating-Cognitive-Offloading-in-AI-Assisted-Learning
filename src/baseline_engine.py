@@ -10,5 +10,6 @@ class BaselineEngine:
             "Provide the complete, direct, and explicit solution to the student's question immediately."
         )
 
-    def build_prompt(self, user_question: str) -> str:
-        return f"{self.system_instructions}\n\nStudent Question: {user_question}\n\nFull Solution:"
+    def build_prompt(self, user_question: str, student_code: str = "") -> str:
+        code_block = f"\n\nStudent Code:\n```\n{student_code.strip()}\n```" if student_code and student_code.strip() else ""
+        return f"{self.system_instructions}\n\nStudent Question: {user_question}{code_block}\n\nFull Solution:"

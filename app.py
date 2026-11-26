@@ -332,7 +332,10 @@ with col_chat:
                         leakage_status = "Active & Enforcing (Direct Solution Suppressed)"
 
                     else:
-                        prompt = baseline_engine.build_prompt(active_input)
+                        prompt = baseline_engine.build_prompt(
+                            active_input,
+                            student_code=st.session_state.student_code
+                        )
                         if api_key and len(api_key) > 5:
                             try:
                                 from google import genai
@@ -343,9 +346,19 @@ with col_chat:
                                 )
                                 raw_response = res.text
                             except Exception:
-                                raw_response = mock_service.generate_response(prompt=prompt, mode="baseline")
+                                raw_response = mock_service.generate_response(
+                                    prompt=prompt,
+                                    mode="baseline",
+                                    student_code=st.session_state.student_code,
+                                    user_query=active_input
+                                )
                         else:
-                            raw_response = mock_service.generate_response(prompt=prompt, mode="baseline")
+                            raw_response = mock_service.generate_response(
+                                prompt=prompt,
+                                mode="baseline",
+                                student_code=st.session_state.student_code,
+                                user_query=active_input
+                            )
 
                         final_response = raw_response
                         blooms = evaluator.estimate_blooms_taxonomy_level(final_response)
